@@ -56,6 +56,8 @@ func generateArticleName(title string, date time.Time, config notion_blog.BlogCo
 // chageStatus changes the Notion article status to the published value if set.
 // It returns true if status changed.
 func changeStatus(client *notionapi.Client, p notionapi.Page, config notion_blog.BlogConfig) bool {
+	fmt.Printf(config.FilterProp)
+	fmt.Printf(config.PublishedValue)
 	// No published value or filter prop to change
 	if config.FilterProp == "" || config.PublishedValue == "" {
 		return false
@@ -153,7 +155,6 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 
 	for i, res := range q.Results {
 		title := notion_blog.ConvertRichText(res.Properties["Name"].(*notionapi.TitleProperty).Title)
-		fmt.Printf(res.Properties["Status"])
 		fmt.Printf("-- Article [%d/%d] --\n", i+1, len(q.Results))
 		spin = spinner.StartNew("Getting blocks tree")
 		// Get page blocks tree
