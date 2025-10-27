@@ -19,7 +19,7 @@ type ArchetypeFields struct {
 	Content      string
 	Properties   notionapi.Properties
 }
-
+fmt.Printf("%+v\n", page.Properties)
 func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 	// Initialize first default Notion page fields
 	a := ArchetypeFields{
