@@ -21,42 +21,58 @@ type ArchetypeFields struct {
 }
 
 func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
-	// Initialize first default Notion page fields
 	a := ArchetypeFields{
-		Title:        ConvertRichText(p.Properties["Name"].(*notionapi.TitleProperty).Title),
+		Title:        "",
+		Description:  "",
+		Banner:       "",
 		CreationDate: p.CreatedTime,
 		LastModified: p.LastEditedTime,
-		Author:       p.Properties["Created By"].(*notionapi.CreatedByProperty).CreatedBy.Name,
+		Author:       "",
 	}
 
-	a.Banner = ""
+	// --- Title ---
+	if nameProp, ok := p.Properties["Name"].(*notionapi.TitleProperty); ok {
+		a.Title = ConvertRichText(nameProp.Title)
+	} else {
+		log.Println("warning: missing or invalid 'Name' property")
+	}
+
+	// --- Author ---
+	if createdByProp, ok := p.Properties["Created By"].(*notionapi.CreatedByProperty); ok && createdByProp.CreatedBy != nil {
+		a.Author = createdByProp.CreatedBy.Name
+	} else if authorProp, ok := p.Properties["Author"].(*notionapi.PeopleProperty); ok && len(authorProp.People) > 0 {
+		a.Author = authorProp.People[0].Name
+	} else {
+		log.Println("warning: no 'Created By' or 'Author' property found; leaving Author blank")
+	}
+
+	// --- Banner ---
 	if p.Cover != nil && p.Cover.GetURL() != "" {
 		coverSrc, _ := getImage(p.Cover.GetURL(), config)
 		a.Banner = coverSrc
 	}
 
-	// Custom fields
+	// --- Description ---
 	if v, ok := p.Properties[config.PropertyDescription]; ok {
-		text, ok := v.(*notionapi.RichTextProperty)
-		if ok {
+		if text, ok := v.(*notionapi.RichTextProperty); ok {
 			a.Description = ConvertRichText(text.RichText)
 		} else {
 			log.Println("warning: given property description is not a text property")
 		}
 	}
 
+	// --- Categories ---
 	if v, ok := p.Properties[config.PropertyCategories]; ok {
-		multiSelect, ok := v.(*notionapi.MultiSelectProperty)
-		if ok {
+		if multiSelect, ok := v.(*notionapi.MultiSelectProperty); ok {
 			a.Categories = multiSelect.MultiSelect
 		} else {
 			log.Println("warning: given property categories is not a multi-select property")
 		}
 	}
 
+	// --- Tags ---
 	if v, ok := p.Properties[config.PropertyTags]; ok {
-		multiSelect, ok := v.(*notionapi.MultiSelectProperty)
-		if ok {
+		if multiSelect, ok := v.(*notionapi.MultiSelectProperty); ok {
 			a.Tags = multiSelect.MultiSelect
 		} else {
 			log.Println("warning: given property tags is not a multi-select property")
@@ -64,6 +80,5 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 	}
 
 	a.Properties = p.Properties
-
 	return a
 }
