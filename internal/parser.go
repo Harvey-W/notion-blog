@@ -154,6 +154,19 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 	for i, res := range q.Results {
 		title := notion_blog.ConvertRichText(res.Properties["Name"].(*notionapi.TitleProperty).Title)
 
+		// --- Skip if status is not Published ---
+	    if v, ok := res.Properties["Status"]; ok {
+	        if status, ok := v.(*notionapi.SelectProperty); ok {
+	            if strings.ToLower(status.Select.Name) != "published" {
+	                fmt.Printf("⚠️  Skipping '%s' (status: %s)\n", title, status.Select.Name)
+	                continue
+	            }
+	        }
+	    } else {
+	        fmt.Printf("⚠️  Skipping '%s' (no status field)\n", title)
+	        continue
+	    }
+
 		fmt.Printf("-- Article [%d/%d] --\n", i+1, len(q.Results))
 		spin = spinner.StartNew("Getting blocks tree")
 		// Get page blocks tree
