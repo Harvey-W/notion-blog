@@ -26,9 +26,10 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 		Title:        ConvertRichText(p.Properties["Name"].(*notionapi.TitleProperty).Title),
 		CreationDate: p.CreatedTime,
 		LastModified: p.LastEditedTime,
-		draft: p.Properties["Status"],
 	}
-
+	log.Println(p.Properties[config.FilterProp])
+	log.Println(p.Properties[config.FilterValue])
+	log.Println(p.Properties[config.PublishedValue])
 	a.Banner = ""
 	if p.Cover != nil && p.Cover.GetURL() != "" {
 		coverSrc, _ := getImage(p.Cover.GetURL(), config)
