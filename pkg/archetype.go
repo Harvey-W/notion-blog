@@ -17,6 +17,7 @@ type ArchetypeFields struct {
 	Categories   []notionapi.Option
 	Content      string
 	Properties   notionapi.Properties
+	draft        string
 }
 
 func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
@@ -25,6 +26,7 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 		Title:        ConvertRichText(p.Properties["Name"].(*notionapi.TitleProperty).Title),
 		CreationDate: p.CreatedTime,
 		LastModified: p.LastEditedTime,
+		draft: p.Properties["Status"],
 	}
 
 	a.Banner = ""
