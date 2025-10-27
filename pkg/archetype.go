@@ -21,7 +21,7 @@ type ArchetypeFields struct {
 
 func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 	// Initialize first default Notion page fields
-	fmt.Println("%+v\n", p.Properties)
+	fmt.Printf("%+v\n", p.Properties)
 	a := ArchetypeFields{
 		Title:        ConvertRichText(p.Properties["Name"].(*notionapi.TitleProperty).Title),
 		CreationDate: p.CreatedTime,
