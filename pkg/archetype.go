@@ -28,7 +28,6 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 		LastModified: p.LastEditedTime,
 	}
 	log.Println(p.Properties[config.FilterProp])
-	log.Println(p.Properties[config.FilterValue])
 	log.Println(p.Properties[config.PublishedValue])
 	a.Banner = ""
 	if p.Cover != nil && p.Cover.GetURL() != "" {
