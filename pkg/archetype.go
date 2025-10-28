@@ -17,7 +17,7 @@ type ArchetypeFields struct {
 	Categories   []notionapi.Option
 	Content      string
 	Properties   notionapi.Properties
-	draft        string
+	draft        bool
 }
 
 func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
@@ -27,8 +27,9 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 		CreationDate: p.CreatedTime,
 		LastModified: p.LastEditedTime,
 	}
-	log.Println(p.Properties[config.FilterProp])
+	log.Println("PublishedValue = ")
 	log.Println(p.Properties[config.PublishedValue])
+	log.Println("\n")
 	a.Banner = ""
 	if p.Cover != nil && p.Cover.GetURL() != "" {
 		coverSrc, _ := getImage(p.Cover.GetURL(), config)
