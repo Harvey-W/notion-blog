@@ -13,11 +13,11 @@ type ArchetypeFields struct {
 	Banner       string
 	CreationDate time.Time
 	LastModified time.Time
+	Author       string
 	Tags         []notionapi.Option
 	Categories   []notionapi.Option
 	Content      string
 	Properties   notionapi.Properties
-	draft        bool
 }
 
 func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
@@ -26,10 +26,9 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 		Title:        ConvertRichText(p.Properties["Name"].(*notionapi.TitleProperty).Title),
 		CreationDate: p.CreatedTime,
 		LastModified: p.LastEditedTime,
+		Author:       p.Properties["Created By"].(*notionapi.CreatedByProperty).CreatedBy.Name,
 	}
-	log.Println("PublishedValue = ")
-	log.Println(p.Properties[config.PublishedValue])
-	log.Println("\n")
+
 	a.Banner = ""
 	if p.Cover != nil && p.Cover.GetURL() != "" {
 		coverSrc, _ := getImage(p.Cover.GetURL(), config)
