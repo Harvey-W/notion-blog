@@ -148,6 +148,34 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 		return fmt.Errorf("couldn't create content folder: %s", err)
 	}
 
+	// Collect all existing Notion page IDs
+	existingIDs := make(map[string]bool)
+	for _, res := range q.Results {
+	    id := strings.ReplaceAll(string(res.ID), "-", "")
+	    existingIDs[id] = true
+	}
+	
+	// Scan local content folder, delete files whose IDs are no longer in Notion
+	files, _ := os.ReadDir(config.ContentFolder)
+	for _, file := range files {
+	    if strings.HasSuffix(file.Name(), ".md") {
+	        id := strings.TrimSuffix(file.Name(), ".md")
+	        if !existingIDs[id] {
+	            os.Remove(filepath.Join(config.ContentFolder, file.Name()))
+	            fmt.Printf("🗑️ Deleted removed post: %s\n", file.Name())
+	
+	            // Optionally also clean associated images
+	            imgFiles, _ := os.ReadDir(config.ImagesFolder)
+	            for _, img := range imgFiles {
+	                if strings.Contains(img.Name(), id) {
+	                    os.Remove(filepath.Join(config.ImagesFolder, img.Name()))
+	                    fmt.Printf("🗑️ Deleted orphaned image: %s\n", img.Name())
+	                }
+	            }
+	        }
+	    }
+	}
+
 	// number of article status changed
 	changed := 0
 
