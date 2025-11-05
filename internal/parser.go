@@ -192,8 +192,7 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 		if notionID == "" {
 			continue
 		}
-	
-		cleanID := strings.ReplaceAll(notionID, "-", "")
+
 		if !existingIDs[cleanID] {
 			err := os.Remove(path)
 			if err == nil {
