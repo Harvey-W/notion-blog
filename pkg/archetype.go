@@ -26,7 +26,7 @@ func MakeArchetypeFields(p notionapi.Page, config BlogConfig) ArchetypeFields {
 		Title:        ConvertRichText(p.Properties["Name"].(*notionapi.TitleProperty).Title),
 		CreationDate: p.CreatedTime,
 		LastModified: p.LastEditedTime,
-		Notion_id: p.ID,
+		Notion_id: string(p.ID),
 	}
 
 	a.Banner = ""
