@@ -13,6 +13,7 @@ type ArchetypeFields struct {
 	Banner       string
 	CreationDate time.Time
 	LastModified time.Time
+	Notion_id	 string
 	Tags         []notionapi.Option
 	Categories   []notionapi.Option
 	Content      string
