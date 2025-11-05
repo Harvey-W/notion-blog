@@ -193,7 +193,7 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 			continue
 		}
 
-		if !existingIDs[cleanID] {
+		if !existingIDs[notionID] {
 			err := os.Remove(path)
 			if err == nil {
 				fmt.Printf("🗑️ Deleted Notion post (no longer in DB): %s\n", file.Name())
@@ -204,7 +204,7 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 			// 同步清理图片
 			imgFiles, _ := os.ReadDir(config.ImagesFolder)
 			for _, img := range imgFiles {
-				if strings.Contains(img.Name(), cleanID) {
+				if strings.Contains(img.Name(), notionID) {
 					os.Remove(filepath.Join(config.ImagesFolder, img.Name()))
 					fmt.Printf("🗑️ Deleted orphaned image: %s\n", img.Name())
 				}
