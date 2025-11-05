@@ -186,7 +186,11 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 				line = line[:end]
 			}
 			// 清洗引号与空格
-			notionID = strings.Trim(strings.TrimPrefix(line, "notion_id:"), "\" \t")
+			re := regexp.MustCompile(`(?m)^notion_id:\s*["']?([^"'\n]+)["']?`)
+			match := re.FindStringSubmatch(content)
+			if len(match) > 1 {
+			    notionID = match[1]
+			}
 		}
 	
 		// 没有 notion_id 的文件视为“本地原创”，不受影响
