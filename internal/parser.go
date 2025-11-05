@@ -152,6 +152,7 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 	existingIDs := make(map[string]bool)
 	for _, res := range q.Results {
 	    id := string(res.ID)
+		fmt.Println("%s\n", id)
 	    existingIDs[id] = true
 	}
 	
@@ -192,7 +193,7 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 		if notionID == "" {
 			continue
 		}
-
+		fmt.Println("%s\n", notionID)
 		if !existingIDs[notionID] {
 			err := os.Remove(path)
 			if err == nil {
