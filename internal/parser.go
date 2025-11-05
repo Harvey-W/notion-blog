@@ -151,29 +151,66 @@ func ParseAndGenerate(config notion_blog.BlogConfig) error {
 	// Collect all existing Notion page IDs
 	existingIDs := make(map[string]bool)
 	for _, res := range q.Results {
-	    id := strings.ReplaceAll(string(res.ID), "-", "")
+	    id := string(res.ID)
 	    existingIDs[id] = true
 	}
 	
 	// Scan local content folder, delete files whose IDs are no longer in Notion
 	files, _ := os.ReadDir(config.ContentFolder)
 	for _, file := range files {
-	    if strings.HasSuffix(file.Name(), ".md") {
-	        id := strings.TrimSuffix(file.Name(), ".md")
-	        if !existingIDs[id] {
-	            os.Remove(filepath.Join(config.ContentFolder, file.Name()))
-	            fmt.Printf("🗑️ Deleted removed post: %s\n", file.Name())
+		if !strings.HasSuffix(file.Name(), ".md") {
+			continue
+		}
 	
-	            // Optionally also clean associated images
-	            imgFiles, _ := os.ReadDir(config.ImagesFolder)
-	            for _, img := range imgFiles {
-	                if strings.Contains(img.Name(), id) {
-	                    os.Remove(filepath.Join(config.ImagesFolder, img.Name()))
-	                    fmt.Printf("🗑️ Deleted orphaned image: %s\n", img.Name())
-	                }
-	            }
-	        }
-	    }
+		path := filepath.Join(config.ContentFolder, file.Name())
+	
+		// 只读取前几 KB（frontmatter 通常很短），避免加载整个文章
+		f, err := os.Open(path)
+		if err != nil {
+			fmt.Printf("⚠️ Could not open %s: %v\n", file.Name(), err)
+			continue
+		}
+		buf := make([]byte, 4096) // 读取 4KB 足够覆盖 frontmatter
+		n, _ := f.Read(buf)
+		f.Close()
+	
+		content := string(buf[:n])
+	
+		// 快速匹配 frontmatter 中的 notion_id
+		var notionID string
+		if idx := strings.Index(content, "notion_id:"); idx != -1 {
+			// 提取行尾
+			line := content[idx:]
+			if end := strings.Index(line, "\n"); end != -1 {
+				line = line[:end]
+			}
+			// 清洗引号与空格
+			notionID = strings.Trim(strings.TrimPrefix(line, "notion_id:"), "\" \t")
+		}
+	
+		// 没有 notion_id 的文件视为“本地原创”，不受影响
+		if notionID == "" {
+			continue
+		}
+	
+		cleanID := strings.ReplaceAll(notionID, "-", "")
+		if !existingIDs[cleanID] {
+			err := os.Remove(path)
+			if err == nil {
+				fmt.Printf("🗑️ Deleted Notion post (no longer in DB): %s\n", file.Name())
+			} else {
+				fmt.Printf("⚠️ Failed to delete %s: %v\n", file.Name(), err)
+			}
+	
+			// 同步清理图片
+			imgFiles, _ := os.ReadDir(config.ImagesFolder)
+			for _, img := range imgFiles {
+				if strings.Contains(img.Name(), cleanID) {
+					os.Remove(filepath.Join(config.ImagesFolder, img.Name()))
+					fmt.Printf("🗑️ Deleted orphaned image: %s\n", img.Name())
+				}
+			}
+		}
 	}
 
 	// number of article status changed
