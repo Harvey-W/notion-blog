@@ -7,13 +7,14 @@ Demo: [![](https://img.shields.io/badge/Harvey's%20Blog-@HarveyW-blue)](https://
 
 ## Changelog
 
-- Fix a warning caused by a GitHub Action deprecated command:  
+- Fixed a warning caused by a deprecated GitHub Actions command:  
   ```JavaScript
   Warning: The `set-output` command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/  
-- Use **Notion ID** to identify an unique post and apply on "add/delete/modify". (Instead of title name in the original version).
-- Delete pages in the Notion Database can NOW be synchronized equally with posts and attached images due to the Notion ID identifier.
-- Deprecate "Author" property because this is not a default setting in a new Notion page, and can cause a severe bug when it is missing.
-- All tools are update to latest in the workflow and add an elaborate git commit message.  
+- Replaced title-based identification with Notion ID for post synchronization.
+Now all add/delete/modify operations are tracked using the Notion ID instead of the post title.
+- Deletions in the Notion database are now fully synchronized with corresponding posts and attached images, thanks to the Notion ID–based identifier.
+- Deprecated the "Author" property, as it is not included by default in new Notion pages and may cause critical errors when missing.
+- Updated all tools in the workflow to their latest versions and added more descriptive Git commit messages.   
   https://github.com/Harvey-W/harvey-w.github.io/blob/main
 
 ## Usage
