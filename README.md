@@ -14,8 +14,8 @@ Demo: [![](https://img.shields.io/badge/Harvey's%20Blog-@HarveyW-blue)](https://
 Now all add/delete/modify operations are tracked using the Notion ID instead of the post title.
 - Deletions in the Notion database are now fully synchronized with corresponding posts and attached images, thanks to the Notion ID–based identifier.
 - Deprecated the "Author" property, as it is not included by default in new Notion pages and may cause critical errors when missing.
-- Updated all tools in the workflow to their latest versions and added more descriptive Git commit messages.   
-  https://github.com/Harvey-W/harvey-w.github.io/blob/main
+- Updated all toolkits in the [workflow](https://github.com/Harvey-W/harvey-w.github.io/blob/main/.github/workflows/notion-sync.yml) to their latest versions and added more descriptive Git commit messages.   
+  
 
 ## Usage 使用方法
 
