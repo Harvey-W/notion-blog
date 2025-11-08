@@ -17,8 +17,10 @@ Now all add/delete/modify operations are tracked using the Notion ID instead of 
 - Updated all tools in the workflow to their latest versions and added more descriptive Git commit messages.   
   https://github.com/Harvey-W/harvey-w.github.io/blob/main
 
-## Usage
+## Usage 使用方法
 
-- YOUR Notion Integration Secret (GitHub repository -> Settings -> Secrets and variables -> Actions -> Repository secrets -> New)
-- YOUR Notion Database shared ID (/.github/workflows/notion-sync.yml -> "databaseID":)
+- Apply YOUR [Notion Integration Secret](https://www.notion.so/profile/integrations) and connect to your Notion Page(Database needed). Follow with: GitHub repository -> Settings -> Secrets and variables -> Actions -> Repository secrets -> New  
+  *申请一个Notion Integration，并连接到所在Notion页面（要用数据库形式存放文章），然后依照顺序添加此secret*
+- Copy YOUR Notion Database shared ID, which is contained in "Shared Page" of Notion page(formed like https://www.notion.so/YOUR_ID?v=xxxx). Follow with: /.github/workflows/notion-sync.yml -> "databaseID":  
+ *复制分享ID，通过分享一个Notion页面来找到ID，然后粘贴到workflow里文件对应键值*
 - Hugo powered blog.
